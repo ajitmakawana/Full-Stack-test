@@ -930,7 +930,12 @@ async function startServer() {
   app.use(
     '/graphql',
     cors({
-      origin: ['http://localhost:3000', 'http://localhost:5173'],
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:5173',
+        process.env.CLIENT_URL,
+        /\.netlify\.app$/
+      ].filter(Boolean),
       credentials: true
     }),
     express.json(),
@@ -943,7 +948,8 @@ async function startServer() {
     })
   );
 
-  await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
+  const PORT = process.env.PORT || 4000;
+  await new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
 
   console.log(`
   🚀 GraphQL Server ready at http://localhost:4000/graphql
